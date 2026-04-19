@@ -3,8 +3,6 @@
 İngilizce dilbilgisini Duolingo tarzı oyunlaştırılmış bir deneyime dönüştüren web
 uygulaması. Günde 5 dakikada, oyun oynar gibi gramer öğren.
 
-**Live demo:** _deploy edildiğinde burası dolar_
-
 ---
 
 ## Özellikler
@@ -40,9 +38,14 @@ uygulaması. Günde 5 dakikada, oyun oynar gibi gramer öğren.
 
 ## Üniteler
 
-**Başlangıç:** Present Simple · Past Simple · Present Continuous
-**Orta:** Future · Present Perfect · Modal Verbs · Past Continuous & Perfect · Used to · Comparatives · Articles · Question Tags
-**İleri:** Conditionals · Passive Voice · Reported Speech · Relative Clauses · Gerunds & Infinitives · Phrasal Verbs
+**Başlangıç**
+Present Simple · Past Simple · Present Continuous
+
+**Orta**
+Future · Present Perfect · Modal Verbs · Past Continuous & Perfect · Used to · Comparatives · Articles · Question Tags
+
+**İleri**
+Conditionals · Passive Voice · Reported Speech · Relative Clauses · Gerunds & Infinitives · Phrasal Verbs
 
 ---
 
