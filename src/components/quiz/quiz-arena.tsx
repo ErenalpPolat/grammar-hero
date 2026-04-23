@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ArrowRight, Heart, RefreshCw, Sparkles, X } from "lucide-react";
 import { QuizFrame } from "./quiz-frame";
@@ -25,8 +24,7 @@ export interface QuizArenaProps {
 }
 
 export function QuizArena({ quiz, exitHref, lessonDetailHref }: QuizArenaProps) {
-  const router = useRouter();
-  const { state, currentExercise, total, xp, accuracyPct, progress, setAnswer, submit, skip, continueNext } =
+  const { state, currentExercise, total, xp, accuracyPct, progress, setAnswer, submit, skip, continueNext, reset } =
     useLessonState(quiz);
 
   // Enter → submit when ready, or continue when feedback
@@ -68,7 +66,7 @@ export function QuizArena({ quiz, exitHref, lessonDetailHref }: QuizArenaProps) 
   }
 
   if (state.phase === "game-over") {
-    return <GameOverScreen accuracyPct={accuracyPct} correctCount={state.correctCount} total={total} onRetry={() => router.refresh()} exitHref={exitHref} />;
+    return <GameOverScreen accuracyPct={accuracyPct} correctCount={state.correctCount} total={total} onRetry={reset} exitHref={exitHref} />;
   }
 
   if (!currentExercise) return null;

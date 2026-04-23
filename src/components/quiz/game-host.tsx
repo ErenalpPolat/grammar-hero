@@ -113,8 +113,9 @@ export function isAnswerReady(exercise: Exercise, answer: unknown): boolean {
     case "drag-drop":
       return typeof answer === "number";
     case "true-false":
+      return typeof answer === "boolean";
     case "memory-match":
-      return typeof answer === "boolean" && answer === true;
+      return answer === true;
     case "word-bank":
       return Array.isArray(answer) && answer.length === exercise.tokens.length;
     case "word-scramble":

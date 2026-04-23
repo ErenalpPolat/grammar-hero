@@ -26,7 +26,23 @@ type Action =
   | { type: "SET_ANSWER"; answer: unknown }
   | { type: "SUBMIT"; result: GradeResult; exercise: Exercise }
   | { type: "SKIP"; exercise: Exercise }
-  | { type: "CONTINUE"; total: number };
+  | { type: "CONTINUE"; total: number }
+  | { type: "RESET"; heartsMax: number };
+
+function initialState(heartsMax: number): LessonState {
+  return {
+    index: 0,
+    hearts: heartsMax,
+    heartsMax,
+    correctCount: 0,
+    wrongCount: 0,
+    skippedCount: 0,
+    phase: "answering",
+    feedback: null,
+    answer: null,
+    wrongExercises: [],
+  };
+}
 
 function reducer(state: LessonState, action: Action): LessonState {
   switch (action.type) {
@@ -67,6 +83,9 @@ function reducer(state: LessonState, action: Action): LessonState {
       if (next >= action.total) return { ...state, phase: "completed", feedback: null, answer: null };
       return { ...state, index: next, phase: "answering", feedback: null, answer: null };
     }
+    case "RESET": {
+      return initialState(action.heartsMax);
+    }
   }
 }
 
@@ -74,18 +93,7 @@ export function useLessonState(quiz: LessonQuiz) {
   const heartsMax = quiz.heartsMax ?? 3;
   const total = quiz.exercises.length;
 
-  const [state, dispatch] = useReducer(reducer, {
-    index: 0,
-    hearts: heartsMax,
-    heartsMax,
-    correctCount: 0,
-    wrongCount: 0,
-    skippedCount: 0,
-    phase: "answering" as const,
-    feedback: null,
-    answer: null,
-    wrongExercises: [] as Exercise[],
-  });
+  const [state, dispatch] = useReducer(reducer, heartsMax, initialState);
 
   const currentExercise: Exercise | null = state.index < total ? quiz.exercises[state.index] : null;
 
@@ -107,6 +115,10 @@ export function useLessonState(quiz: LessonQuiz) {
   const continueNext = useCallback(() => {
     dispatch({ type: "CONTINUE", total });
   }, [total]);
+
+  const reset = useCallback(() => {
+    dispatch({ type: "RESET", heartsMax });
+  }, [heartsMax]);
 
   const xp: XpSummary = useMemo(
     () =>
@@ -140,5 +152,6 @@ export function useLessonState(quiz: LessonQuiz) {
     submit,
     skip,
     continueNext,
+    reset,
   };
 }
