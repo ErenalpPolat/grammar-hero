@@ -7,7 +7,6 @@ import { prisma } from "@/lib/prisma";
 import { requireSessionUser } from "@/lib/session";
 import {
   DAILY_GOALS,
-  LANGUAGES,
   LEVELS,
 } from "@/lib/validations";
 
@@ -19,18 +18,16 @@ export interface SettingsActionResult {
 export async function updateLearningPrefsAction(formData: FormData): Promise<SettingsActionResult> {
   const user = await requireSessionUser({ allowIncompleteOnboarding: true });
 
-  const language = String(formData.get("targetLanguage") ?? "");
   const level = String(formData.get("level") ?? "");
   const goalRaw = String(formData.get("dailyGoalMinutes") ?? "");
   const goal = Number.parseInt(goalRaw, 10);
 
-  if (!(LANGUAGES as readonly string[]).includes(language)) return { error: "Geçersiz dil" };
   if (!(LEVELS as readonly string[]).includes(level)) return { error: "Geçersiz seviye" };
   if (!(DAILY_GOALS as readonly number[]).includes(goal)) return { error: "Geçersiz hedef" };
 
   await prisma.user.update({
     where: { id: user.id },
-    data: { targetLanguage: language, level, dailyGoalMinutes: goal },
+    data: { level, dailyGoalMinutes: goal },
   });
   revalidatePath("/profile/settings");
   revalidatePath("/profile");

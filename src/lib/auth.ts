@@ -18,7 +18,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         const user = await prisma.user.upsert({
           where: { id },
           update: {},
-          create: { id, name },
+          create: { id, name, targetLanguage: "en" },
           select: { id: true, name: true, onboardingCompleted: true },
         });
         return { id: user.id, name: user.name, onboardingCompleted: user.onboardingCompleted };

@@ -9,7 +9,7 @@ test.describe("auth flow", () => {
   test("new user login redirects to onboarding", async ({ page }) => {
     const name = uniqueUserName("new");
     await login(page, name);
-    await expect(page).toHaveURL(/\/onboarding\/language/);
+    await expect(page).toHaveURL(/\/onboarding\/level/);
   });
 
   test("short name rejected (client-side)", async ({ page }) => {

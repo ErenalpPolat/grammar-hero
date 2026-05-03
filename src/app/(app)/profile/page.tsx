@@ -11,15 +11,6 @@ import { mockBadges } from "@/lib/mock/profile-data";
 import { prisma } from "@/lib/prisma";
 import { requireSessionUser } from "@/lib/session";
 
-const LANGUAGE_LABEL: Record<string, string> = {
-  en: "🇬🇧 İngilizce",
-  de: "🇩🇪 Almanca",
-  es: "🇪🇸 İspanyolca",
-  fr: "🇫🇷 Fransızca",
-  it: "🇮🇹 İtalyanca",
-  ja: "🇯🇵 Japonca",
-};
-
 const LEVEL_LABEL: Record<string, string> = {
   newbie: "Tamamen yeni",
   "a1-a2": "A1-A2 · Başlangıç",
@@ -115,10 +106,6 @@ export default async function ProfilePage() {
           <DLRow label="En uzun streak" value={`${full?.longestStreak ?? user.currentStreak} gün`} />
           <DLRow label="Toplam oyun" value={String(summary.totalAttempts)} />
           <DLRow label="Toplam zaman" value={formatMinutes(summary.totalMinutes)} />
-          <DLRow
-            label="Hedef dil"
-            value={user.targetLanguage ? LANGUAGE_LABEL[user.targetLanguage] : "—"}
-          />
           <DLRow
             label="Başlangıç seviyesi"
             value={user.level ? LEVEL_LABEL[user.level] : "—"}

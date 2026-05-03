@@ -56,7 +56,7 @@ export async function loginAction(input: {
 
   let redirectTo = "/learn";
   if (!user?.onboardingCompleted) {
-    redirectTo = "/onboarding/language";
+    redirectTo = "/onboarding/level";
   } else if (input.callbackUrl && input.callbackUrl.startsWith("/") && !input.callbackUrl.startsWith("//")) {
     redirectTo = input.callbackUrl;
   }

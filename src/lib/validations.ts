@@ -10,11 +10,6 @@ export const LoginSchema = z.object({
 
 export type LoginInput = z.infer<typeof LoginSchema>;
 
-export const LANGUAGES = ["en", "de", "es", "fr", "it", "ja"] as const;
-export const OnboardingLanguageSchema = z.object({
-  language: z.enum(LANGUAGES),
-});
-
 export const LEVELS = ["newbie", "a1-a2", "b1-b2", "c1-plus"] as const;
 export const OnboardingLevelSchema = z.object({
   level: z.enum(LEVELS),

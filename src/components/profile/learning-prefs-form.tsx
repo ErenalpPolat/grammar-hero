@@ -15,15 +15,6 @@ import {
 } from "@/components/ui/select";
 import { updateLearningPrefsAction } from "@/app/(app)/profile/settings/actions";
 
-const LANGUAGES = [
-  { value: "en", label: "🇬🇧 İngilizce" },
-  { value: "de", label: "🇩🇪 Almanca" },
-  { value: "es", label: "🇪🇸 İspanyolca" },
-  { value: "fr", label: "🇫🇷 Fransızca" },
-  { value: "it", label: "🇮🇹 İtalyanca" },
-  { value: "ja", label: "🇯🇵 Japonca" },
-];
-
 const LEVELS = [
   { value: "newbie", label: "Tamamen yeni" },
   { value: "a1-a2", label: "A1-A2 Başlangıç" },
@@ -34,11 +25,9 @@ const LEVELS = [
 const GOALS = [5, 10, 15, 20];
 
 export function LearningPrefsForm({
-  initialLanguage,
   initialLevel,
   initialGoal,
 }: {
-  initialLanguage: string | null;
   initialLevel: string | null;
   initialGoal: number;
 }) {
@@ -54,22 +43,6 @@ export function LearningPrefsForm({
 
   return (
     <form action={handleSubmit} className="space-y-5">
-      <div className="space-y-2">
-        <Label htmlFor="settings-language">Hedef dil</Label>
-        <Select name="targetLanguage" defaultValue={initialLanguage ?? "en"}>
-          <SelectTrigger id="settings-language">
-            <SelectValue placeholder="Dil seç" />
-          </SelectTrigger>
-          <SelectContent>
-            {LANGUAGES.map((l) => (
-              <SelectItem key={l.value} value={l.value}>
-                {l.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
       <div className="space-y-2">
         <Label htmlFor="settings-level">Seviye</Label>
         <Select name="level" defaultValue={initialLevel ?? "newbie"}>

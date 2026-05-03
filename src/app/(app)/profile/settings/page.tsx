@@ -59,7 +59,6 @@ export default async function SettingsPage() {
         </CardHeader>
         <CardContent>
           <LearningPrefsForm
-            initialLanguage={user.targetLanguage}
             initialLevel={user.level}
             initialGoal={user.dailyGoalMinutes}
           />

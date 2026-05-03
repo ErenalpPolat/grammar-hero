@@ -15,7 +15,6 @@ export interface SessionUser {
   /** Bugün bu kadar dakika pratik edildi (DailyActivity tablosundan) */
   dailyMinutes: number;
   onboardingCompleted: boolean;
-  targetLanguage: string | null;
   level: string | null;
 }
 
@@ -35,14 +34,13 @@ export async function requireSessionUser(options?: { allowIncompleteOnboarding?:
       hearts: true,
       dailyGoalMinutes: true,
       onboardingCompleted: true,
-      targetLanguage: true,
       level: true,
     },
   });
   if (!user) redirect("/login");
 
   if (!user.onboardingCompleted && !options?.allowIncompleteOnboarding) {
-    redirect("/onboarding/language");
+    redirect("/onboarding/level");
   }
 
   const dailyMinutes = await getTodayMinutes(user.id);

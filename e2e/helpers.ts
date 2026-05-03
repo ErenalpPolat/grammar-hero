@@ -29,14 +29,10 @@ export async function login(page: Page, name: string): Promise<void> {
 }
 
 /**
- * 3 adımlı onboarding'i tamamlar: dil → seviye → günlük hedef.
+ * 2 adımlı onboarding'i tamamlar: seviye → günlük hedef.
  * Kullanıcı onboarding'de başlıyor olmalı (login yeni kullanıcı ile).
  */
 export async function completeOnboarding(page: Page): Promise<void> {
-  await page.waitForURL(/\/onboarding\/language/);
-  await page.getByRole("button", { name: /İngilizce/i }).click();
-  await page.getByRole("button", { name: /Devam|İleri|Sonraki/i }).click();
-
   await page.waitForURL(/\/onboarding\/level/);
   await page.getByText(/Yeni Başlıyorum|Başlangıç/i).first().click();
   await page.getByRole("button", { name: /Devam|İleri|Sonraki/i }).click();

@@ -1,8 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useState, useTransition } from "react";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { ChoiceCard } from "@/components/onboarding/choice-card";
 import { StepIndicator } from "@/components/onboarding/step-indicator";
 import { Button } from "@/components/ui/button";
@@ -30,13 +29,7 @@ export default function OnboardingLevelPage() {
 
   return (
     <div>
-      <Link
-        href="/onboarding/language"
-        className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="size-4" /> Geri
-      </Link>
-      <StepIndicator current={2} total={3} />
+      <StepIndicator current={1} total={2} />
       <h1 className="mb-6 text-center text-3xl font-bold">Şu anki seviyen nedir?</h1>
       <div className="flex flex-col gap-3">
         {LEVELS.map((lvl) => (
