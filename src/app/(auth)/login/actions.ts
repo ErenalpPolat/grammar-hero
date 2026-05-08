@@ -1,7 +1,7 @@
 "use server";
 
 import { headers } from "next/headers";
-import { AuthError } from "next-auth";
+import { AuthError, CredentialsSignin } from "next-auth";
 import { signIn } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rate-limit";
@@ -41,8 +41,16 @@ export async function loginAction(input: {
       redirect: false,
     });
   } catch (err) {
+    console.error("[login] signIn failed", err);
+    if (err instanceof CredentialsSignin) {
+      return { error: "Giriş bilgisi doğrulanamadı. Adını kontrol edip tekrar dene." };
+    }
     if (err instanceof AuthError) {
-      return { error: "Giriş başarısız. Tekrar dene." };
+      // Likely DB error wrapped in CallbackRouteError, or config error.
+      // Tam neden olduğunu Vercel/host log'larında "[auth/authorize]" satırında gör.
+      return {
+        error: "Sunucu hatası. Veritabanı bağlantısı veya AUTH_SECRET'ı kontrol et.",
+      };
     }
     throw err;
   }
