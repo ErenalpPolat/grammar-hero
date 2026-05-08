@@ -6,6 +6,10 @@ import type { NextAuthConfig } from "next-auth";
  * Full config (with Credentials provider + Prisma) is in `auth.ts`.
  */
 export const authConfig = {
+  // VPS / self-hosted: yokluğunda trustHost yalnız VERCEL/CF_PAGES env'i varsa
+  // true oluyor; Contabo gibi kendi sunucumuzda manuel açıyoruz. Nginx
+  // X-Forwarded-Host / X-Forwarded-Proto header'larını forward etmeli.
+  trustHost: true,
   session: { strategy: "jwt", maxAge: 7 * 24 * 60 * 60 },
   pages: { signIn: "/login" },
   providers: [],
