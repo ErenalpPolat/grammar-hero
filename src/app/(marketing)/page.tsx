@@ -89,7 +89,7 @@ export default function LandingPage() {
           <Step
             step={3}
             title="Oynamaya başla"
-            desc="Skill tree'den bir ders aç, 4 oyun tipinden birini seç, XP kazan."
+            desc="Skill tree'den bir ders aç, 8 oyun tipinden birini seç, XP kazan."
           />
         </ol>
       </section>
@@ -97,16 +97,20 @@ export default function LandingPage() {
       {/* Game types */}
       <section className="py-12 sm:py-20">
         <h2 className="mb-2 text-center text-3xl font-bold sm:text-4xl">
-          Her ders, 4 farklı oyun
+          Her ders, 8 farklı oyun
         </h2>
         <p className="mb-10 text-center text-muted-foreground">
-          Aynı konuyu 4 farklı şekilde öğrenirsin — ezber değil, ders.
+          Aynı konuyu 8 farklı şekilde öğrenirsin — ezber değil, ders.
         </p>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <GameTile emoji="🔘" title="Çoktan Seçmeli" desc="4 şıktan doğruyu bul" />
-          <GameTile emoji="📝" title="Fill in the Blank" desc="Cümle boşluğunu tamamla" />
-          <GameTile emoji="✓✗" title="True / False" desc="Cümle doğru mu yanlış mı" />
+          <GameTile emoji="📝" title="Boşluk Doldur" desc="Cümle boşluğunu tamamla" />
+          <GameTile emoji="✓✗" title="Doğru / Yanlış" desc="Cümle doğru mu yanlış mı" />
           <GameTile emoji="🧩" title="Cümle Kur" desc="Kelimeleri sıraya diz" />
+          <GameTile emoji="🔤" title="Karışık Harfler" desc="Harflerden kelimeyi kur" />
+          <GameTile emoji="🔍" title="Hata Bul" desc="Cümledeki yanlış kelimeyi tıkla" />
+          <GameTile emoji="🎯" title="Sürükle-Bırak" desc="Doğru cevabı kutuya sürükle" />
+          <GameTile emoji="🧠" title="Hafıza Eşleştirme" desc="Eşleşen kartları bul" />
         </div>
       </section>
 
