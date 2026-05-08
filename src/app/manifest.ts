@@ -13,9 +13,14 @@ export default function manifest(): MetadataRoute.Manifest {
     lang: "tr",
     icons: [
       {
-        src: "/favicon.ico",
-        sizes: "256x256",
-        type: "image/x-icon",
+        src: "/icon",
+        sizes: "32x32",
+        type: "image/png",
+      },
+      {
+        src: "/apple-icon",
+        sizes: "180x180",
+        type: "image/png",
       },
     ],
     categories: ["education", "games"],
