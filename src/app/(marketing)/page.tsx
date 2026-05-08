@@ -25,7 +25,7 @@ export default function LandingPage() {
             oyun gibi keyif al.
           </h1>
           <p className="text-lg text-muted-foreground sm:text-xl">
-            Duolingo tarzı oyunlaştırılmış egzersizler, streak sistemi ve spaced repetition
+            Duolingo tarzı oyunlaştırılmış egzersizler, streak sistemi ve aralıklı tekrarlar
             ile günde 5 dakikada İngilizce gramerini sağlamlaştır.
           </p>
           <div className="flex flex-wrap gap-3">
