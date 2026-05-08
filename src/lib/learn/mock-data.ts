@@ -6,6 +6,7 @@ export const MOCK_UNITS: Unit[] = [
     title: "Şimdiki Zaman",
     description: "Alışkanlıklar, genel doğrular, tarifeli olaylar — dilbilgisinin ilk taşı.",
     difficulty: "Başlangıç",
+    cefrLevel: "a1",
     status: "available",
     lessons: [
       {
@@ -65,6 +66,7 @@ export const MOCK_UNITS: Unit[] = [
     title: "Geçmiş Zaman",
     description: "Düzenli ve düzensiz fiiller, geçmişteki belirli olaylar.",
     difficulty: "Başlangıç",
+    cefrLevel: "a1",
     status: "locked",
     lessons: [
       { id: "past-1", title: "Düzenli Fiiller", status: "locked", icon: "clock" },
@@ -80,6 +82,7 @@ export const MOCK_UNITS: Unit[] = [
     title: "Şimdiki Sürekli Zaman",
     description: "Şu anda olmakta olan eylemler · am/is/are + V-ing yapısı.",
     difficulty: "Orta",
+    cefrLevel: "a2",
     status: "locked",
     lessons: [
       { id: "pc-1", title: "Olumlu Cümle", status: "locked", icon: "rocket" },
@@ -95,6 +98,7 @@ export const MOCK_UNITS: Unit[] = [
     title: "Gelecek Zaman",
     description: "Niyetler, planlar, öngörüler · will ve be going to.",
     difficulty: "Orta",
+    cefrLevel: "a2",
     status: "locked",
     lessons: [
       { id: "fut-1", title: "will · Olumlu", status: "locked", icon: "rocket" },
@@ -110,6 +114,7 @@ export const MOCK_UNITS: Unit[] = [
     title: "Şimdiki Bitmiş Zaman",
     description: "have/has + V3 · deneyim, yakın geçmiş, süre — for/since.",
     difficulty: "Orta",
+    cefrLevel: "b1",
     status: "locked",
     lessons: [
       { id: "perf-1", title: "have/has + V3 Olumlu", status: "locked", icon: "award" },
@@ -125,6 +130,7 @@ export const MOCK_UNITS: Unit[] = [
     title: "Modal Fiiller",
     description: "can · could · should · must · may/might — yetenek, tavsiye, zorunluluk, olasılık.",
     difficulty: "Orta",
+    cefrLevel: "b1",
     status: "locked",
     lessons: [
       { id: "mod-1", title: "can / can't", status: "locked", icon: "zap" },
@@ -140,6 +146,7 @@ export const MOCK_UNITS: Unit[] = [
     title: "Koşul Cümleleri",
     description: "If clauses · Type 0, 1, 2, 3 — gerçek, hayali, pişmanlık.",
     difficulty: "İleri",
+    cefrLevel: "b2",
     status: "locked",
     lessons: [
       { id: "cond-1", title: "Type 0 · Genel doğrular", status: "locked", icon: "star" },
@@ -155,6 +162,7 @@ export const MOCK_UNITS: Unit[] = [
     title: "Edilgen Çatı",
     description: "be + V3 · fiili yapılan işin öznesi belirsiz/önemsiz olduğunda.",
     difficulty: "İleri",
+    cefrLevel: "b2",
     status: "locked",
     lessons: [
       { id: "pass-1", title: "Present Simple Passive", status: "locked", icon: "book" },
@@ -170,6 +178,7 @@ export const MOCK_UNITS: Unit[] = [
     title: "Past Continuous & Past Perfect",
     description: "Geçmişte paralel/öncelikli olaylar — was/were + V-ing ve had + V3.",
     difficulty: "Orta",
+    cefrLevel: "b1",
     status: "locked",
     lessons: [
       { id: "pcp-1", title: "Past Continuous · Olumlu", status: "locked", icon: "clock" },
@@ -185,6 +194,7 @@ export const MOCK_UNITS: Unit[] = [
     title: "Used to",
     description: "Geçmiş alışkanlıklar · be used to / get used to ayrımı.",
     difficulty: "Orta",
+    cefrLevel: "a2",
     status: "locked",
     lessons: [
       { id: "used-1", title: "used to · Olumlu", status: "locked", icon: "clock" },
@@ -200,6 +210,7 @@ export const MOCK_UNITS: Unit[] = [
     title: "Karşılaştırma",
     description: "Comparatives & superlatives · -er/-est · more/most · as…as.",
     difficulty: "Orta",
+    cefrLevel: "a2",
     status: "locked",
     lessons: [
       { id: "comp-1", title: "Kısa sıfatlar · -er/-est", status: "locked", icon: "star" },
@@ -215,6 +226,7 @@ export const MOCK_UNITS: Unit[] = [
     title: "Tanımlıklar (Articles)",
     description: "a · an · the · tanımlıksız kullanım — özel ad kuralları.",
     difficulty: "Orta",
+    cefrLevel: "a2",
     status: "locked",
     lessons: [
       { id: "art-1", title: "a / an", status: "locked", icon: "book" },
@@ -230,6 +242,7 @@ export const MOCK_UNITS: Unit[] = [
     title: "Question Tags",
     description: "Değil mi? — cümle sonu soruları · isn't it, don't you, didn't they…",
     difficulty: "Orta",
+    cefrLevel: "b1",
     status: "locked",
     lessons: [
       { id: "qtag-1", title: "be (am/is/are)", status: "locked", icon: "messageCircle" },
@@ -245,6 +258,7 @@ export const MOCK_UNITS: Unit[] = [
     title: "Dolaylı Anlatım",
     description: "Reported speech · said/told/asked · backshift · zaman-yer değişimi.",
     difficulty: "İleri",
+    cefrLevel: "b2",
     status: "locked",
     lessons: [
       { id: "rs-1", title: "Statements · backshift", status: "locked", icon: "book" },
@@ -260,6 +274,7 @@ export const MOCK_UNITS: Unit[] = [
     title: "Sıfat Cümlecikleri",
     description: "who · which · that · whose · where/when/why — adlara bağlı cümlecikler.",
     difficulty: "İleri",
+    cefrLevel: "b2",
     status: "locked",
     lessons: [
       { id: "rel-1", title: "who / whom · insanlar", status: "locked", icon: "star" },
@@ -275,6 +290,7 @@ export const MOCK_UNITS: Unit[] = [
     title: "Gerunds & Infinitives",
     description: "-ing vs. to + V1 · anlam değiştiren fiiller · preposition + gerund.",
     difficulty: "İleri",
+    cefrLevel: "c1",
     status: "locked",
     lessons: [
       { id: "gi-1", title: "Gerund (-ing) fiiller", status: "locked", icon: "sparkles" },
@@ -290,6 +306,7 @@ export const MOCK_UNITS: Unit[] = [
     title: "Phrasal Verbs",
     description: "get · turn · look · take · give/put/break — en yaygın phrasal verbs.",
     difficulty: "İleri",
+    cefrLevel: "c1",
     status: "locked",
     lessons: [
       { id: "phv-1", title: "get + particles", status: "locked", icon: "zap" },

@@ -6,7 +6,7 @@ export const metadata = { title: "Öğren" };
 
 export default async function LearnPage() {
   const user = await requireSessionUser();
-  const units = await getUnitsWithProgress(user.id);
+  const units = await getUnitsWithProgress(user.id, user.level);
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6">

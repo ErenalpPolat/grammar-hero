@@ -16,6 +16,9 @@ export type LessonIcon =
 
 export type Difficulty = "Başlangıç" | "Orta" | "İleri";
 
+/** CEFR seviyesi — onboarding'de seçilen `level` ile filtreleme için */
+export type CefrLevel = "a1" | "a2" | "b1" | "b2" | "c1";
+
 export interface Lesson {
   id: string;
   title: string;
@@ -35,6 +38,8 @@ export interface Unit {
   title: string;
   description: string;
   difficulty: Difficulty;
+  /** CEFR seviyesi — kullanıcının seçtiği seviyeye göre unit'ler filtrelenir */
+  cefrLevel: CefrLevel;
   status: LessonStatus;
   lessons: Lesson[];
 }
