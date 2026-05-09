@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { gemsForQuiz, levelFromXp, starsFromAccuracy } from "@/lib/exercise/xp";
 import { addLeagueXp } from "@/lib/league";
 import { computeNewStreak } from "@/lib/streak";
-import { startOfDay } from "@/lib/date";
+import { startOfDayUtc } from "@/lib/date";
 import type { GameType } from "@/lib/exercise/types";
 
 const VALID_GAMES: GameType[] = [
@@ -69,8 +69,9 @@ export async function recordQuizCompletionAction(
   const stars = starsFromAccuracy(score);
   const gems = gemsForQuiz(stars);
   const passed = score >= 60;
-  const todayStart = startOfDay(new Date());
-  const minutes = Math.max(1, Math.min(30, input.minutesSpent ?? 3));
+  const todayStart = startOfDayUtc(new Date());
+  // Quiz'de gerçekten geçirilen dakika (frontend ölçer). Yoksa minimum 1 dk.
+  const minutes = Math.max(1, Math.min(60, input.minutesSpent ?? 1));
 
   const result = await prisma.$transaction(async (tx) => {
     const user = await tx.user.findUnique({

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
-import { addDays, startOfDay } from "@/lib/date";
+import { addDaysUtc, startOfDayUtc } from "@/lib/date";
 import { prisma } from "@/lib/prisma";
 import { applySM2, type ReviewQuality } from "@/lib/sm2";
 
@@ -82,7 +82,7 @@ export async function rateCardAction(input: {
   if (!card) return { error: "Kart bulunamadı" };
 
   const next = applySM2(card, input.quality);
-  const nextReviewAt = addDays(startOfDay(new Date()), next.interval);
+  const nextReviewAt = addDaysUtc(startOfDayUtc(new Date()), next.interval);
 
   await prisma.reviewCard.update({
     where: { id: input.cardId },

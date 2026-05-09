@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Heart, RefreshCw, Sparkles, X } from "lucide-react";
 import { QuizFrame } from "./quiz-frame";
 import { QuizFooter } from "./quiz-footer";
@@ -26,6 +26,14 @@ export interface QuizArenaProps {
 export function QuizArena({ quiz, exitHref, lessonDetailHref }: QuizArenaProps) {
   const { state, currentExercise, total, xp, accuracyPct, progress, setAnswer, submit, skip, continueNext, reset } =
     useLessonState(quiz);
+
+  // Quiz başlangıç zamanı — completion'da gerçek geçen süreyi (dakika) action'a geçirmek için.
+  // Reset (game over → tekrar dene) sıfırlar; completion kalıcılaştırılır.
+  const startedAtRef = useRef<number>(Date.now());
+  const handleReset = () => {
+    startedAtRef.current = Date.now();
+    reset();
+  };
 
   // Enter → submit when ready, or continue when feedback
   useEffect(() => {
@@ -61,12 +69,13 @@ export function QuizArena({ quiz, exitHref, lessonDetailHref }: QuizArenaProps) 
         heartsMax={state.heartsMax}
         wrongExercises={state.wrongExercises}
         lessonDetailHref={lessonDetailHref}
+        startedAt={startedAtRef.current}
       />
     );
   }
 
   if (state.phase === "game-over") {
-    return <GameOverScreen accuracyPct={accuracyPct} correctCount={state.correctCount} total={total} onRetry={reset} exitHref={exitHref} />;
+    return <GameOverScreen accuracyPct={accuracyPct} correctCount={state.correctCount} total={total} onRetry={handleReset} exitHref={exitHref} />;
   }
 
   if (!currentExercise) return null;
@@ -115,6 +124,7 @@ function CompleteScreen({
   heartsMax,
   wrongExercises,
   lessonDetailHref,
+  startedAt,
 }: {
   quiz: LessonQuiz;
   accuracyPct: number;
@@ -128,6 +138,7 @@ function CompleteScreen({
   heartsMax: number;
   wrongExercises: Exercise[];
   lessonDetailHref: string;
+  startedAt: number;
 }) {
   const stars = starsFromAccuracy(accuracyPct);
   const [saveState, setSaveState] = useState<
@@ -146,6 +157,9 @@ function CompleteScreen({
   useEffect(() => {
     let cancelled = false;
     (async () => {
+      // Quiz başlangıcından şimdiye kadar gerçekten geçen dakika.
+      // Action'da Math.max(1, Math.min(60, ...)) clamp'i var; biz round olarak gönderiyoruz.
+      const minutesSpent = Math.max(1, Math.round((Date.now() - startedAt) / 60_000));
       const [completion, reviewResult] = await Promise.all([
         recordQuizCompletionAction({
           lessonId: quiz.lessonId,
@@ -156,6 +170,7 @@ function CompleteScreen({
           heartsLeft,
           heartsMax,
           xpEarned: xpTotal,
+          minutesSpent,
         }),
         wrongExercises.length > 0
           ? addReviewCardsAction({ cards: exercisesToReviewCards(wrongExercises) })

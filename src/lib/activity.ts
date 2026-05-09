@@ -1,4 +1,4 @@
-import { addDays, startOfDay, toIsoDate } from "@/lib/date";
+import { addDaysUtc, startOfDayUtc, toIsoDate } from "@/lib/date";
 import { prisma } from "@/lib/prisma";
 
 /**
@@ -6,8 +6,8 @@ import { prisma } from "@/lib/prisma";
  * ISO date (YYYY-MM-DD) → lesson count.
  */
 export async function getActivityMap(userId: string, days = 180): Promise<Record<string, number>> {
-  const today = startOfDay(new Date());
-  const since = addDays(today, -(days - 1));
+  const today = startOfDayUtc(new Date());
+  const since = addDaysUtc(today, -(days - 1));
 
   const rows = await prisma.dailyActivity.findMany({
     where: { userId, date: { gte: since, lte: today } },
@@ -48,7 +48,7 @@ export async function getProfileSummary(userId: string): Promise<ProfileSummary>
 
 /** Today's minutes spent for the user (used by Topbar daily goal). */
 export async function getTodayMinutes(userId: string): Promise<number> {
-  const today = startOfDay(new Date());
+  const today = startOfDayUtc(new Date());
   const row = await prisma.dailyActivity.findUnique({
     where: { userId_date: { userId, date: today } },
     select: { minutesSpent: true },
