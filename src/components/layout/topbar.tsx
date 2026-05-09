@@ -65,6 +65,7 @@ function UserMenu({ user }: { user: SessionUser }) {
     startTransition(async () => {
       try {
         await logoutAction();
+        toast.success("Çıkış yapıldı. Tekrar bekleriz! 👋");
         router.push("/");
         router.refresh();
       } catch (err) {
