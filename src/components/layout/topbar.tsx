@@ -1,6 +1,7 @@
 "use client";
 
 import { LogOut, Moon, Sun, Monitor, UserCircle2, Settings } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { Logo } from "./logo";
@@ -56,6 +57,7 @@ function GamificationChips({ user }: { user: SessionUser }) {
 }
 
 function UserMenu({ user }: { user: SessionUser }) {
+  const router = useRouter();
   const { theme, setTheme } = useTheme();
   const [pending, startTransition] = useTransition();
 
@@ -63,7 +65,10 @@ function UserMenu({ user }: { user: SessionUser }) {
     startTransition(async () => {
       try {
         await logoutAction();
-      } catch {
+        router.push("/");
+        router.refresh();
+      } catch (err) {
+        console.error("[logout]", err);
         toast.error("Çıkış yapılamadı");
       }
     });

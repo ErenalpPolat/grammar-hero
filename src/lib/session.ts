@@ -40,7 +40,7 @@ export async function requireSessionUser(options?: { allowIncompleteOnboarding?:
   if (!user) redirect("/login");
 
   if (!user.onboardingCompleted && !options?.allowIncompleteOnboarding) {
-    redirect("/onboarding/level");
+    redirect("/onboarding/name");
   }
 
   const dailyMinutes = await getTodayMinutes(user.id);

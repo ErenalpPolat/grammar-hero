@@ -39,11 +39,11 @@ export async function verifyMagicLinkAction(input: { token: string }): Promise<V
     throw err;
   }
 
-  // Redirect: yeni kullanıcı (onboarding tamamlanmamış) → /onboarding/level, mevcut → /learn
+  // Redirect: yeni kullanıcı (onboarding tamamlanmamış) → /onboarding/name, mevcut → /learn
   const user = await prisma.user.findUnique({
     where: { email: record.email },
     select: { onboardingCompleted: true },
   });
-  const redirectTo = user?.onboardingCompleted ? "/learn" : "/onboarding/level";
+  const redirectTo = user?.onboardingCompleted ? "/learn" : "/onboarding/name";
   return { ok: true, redirectTo };
 }

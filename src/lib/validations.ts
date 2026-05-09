@@ -18,6 +18,14 @@ export const MagicLinkVerifySchema = z.object({
   token: z.string().min(20, "Geçersiz token"),
 });
 
+export const OnboardingNameSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(2, "En az 2 karakter")
+    .max(40, "En fazla 40 karakter"),
+});
+
 export const LEVELS = ["newbie", "a1-a2", "b1-b2", "c1-plus"] as const;
 export const OnboardingLevelSchema = z.object({
   level: z.enum(LEVELS),
