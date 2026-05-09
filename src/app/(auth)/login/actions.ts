@@ -16,9 +16,13 @@ export interface LoginActionResult {
 
 export async function loginAction(input: {
   name: string;
+  password: string;
   callbackUrl?: string | null;
 }): Promise<LoginActionResult> {
-  const parsed = LoginSchema.safeParse({ name: input.name });
+  const parsed = LoginSchema.safeParse({
+    name: input.name,
+    password: input.password,
+  });
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Geçersiz giriş" };
   }
@@ -38,16 +42,18 @@ export async function loginAction(input: {
   try {
     await signIn("credentials", {
       name: parsed.data.name,
+      password: parsed.data.password,
       redirect: false,
     });
   } catch (err) {
     console.error("[login] signIn failed", err);
     if (err instanceof CredentialsSignin) {
-      return { error: "Giriş bilgisi doğrulanamadı. Adını kontrol edip tekrar dene." };
+      return {
+        error:
+          "Yanlış şifre veya bu ad başka bir hesaba ait. Şifreyi kontrol et ya da farklı bir ad seç.",
+      };
     }
     if (err instanceof AuthError) {
-      // Likely DB error wrapped in CallbackRouteError, or config error.
-      // Tam neden olduğunu Vercel/host log'larında "[auth/authorize]" satırında gör.
       return {
         error: "Sunucu hatası. Veritabanı bağlantısı veya AUTH_SECRET'ı kontrol et.",
       };

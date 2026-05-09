@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, Mail, Rocket } from "lucide-react";
+import { Eye, EyeOff, LogIn } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -15,73 +15,30 @@ export function LoginForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
 
-  const [step, setStep] = useState<1 | 2>(1);
   const [name, setName] = useState("");
-  const [sending, setSending] = useState(false);
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [pending, startTransition] = useTransition();
 
-  const trimmed = name.trim();
-  const canProceed = trimmed.length >= 2;
+  const trimmedName = name.trim();
+  const canSubmit = trimmedName.length >= 2 && password.length >= 6;
 
-  function handleStep1(e: React.FormEvent) {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!canProceed || sending) return;
-    setSending(true);
-    // Simulate sending magic link
-    setTimeout(() => {
-      setSending(false);
-      setStep(2);
-    }, 1200);
-  }
-
-  function handleStep2() {
+    if (!canSubmit || pending) return;
     startTransition(async () => {
-      const result = await loginAction({ name: trimmed, callbackUrl });
+      const result = await loginAction({
+        name: trimmedName,
+        password,
+        callbackUrl,
+      });
       if (result.error) {
         toast.error(result.error);
-        setStep(1);
         return;
       }
       router.push(result.redirectTo ?? "/learn");
       router.refresh();
     });
-  }
-
-  if (step === 2) {
-    return (
-      <Card>
-        <CardContent className="space-y-6 pt-8 text-center">
-          <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary/10">
-            <Mail className="size-8 text-primary" aria-hidden />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold">Link gönderildi!</h1>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Demo modu — gerçek e-posta gitmez. Aşağıdaki butona basarak devam et.
-            </p>
-          </div>
-
-          <Button
-            size="xl"
-            className="w-full"
-            onClick={handleStep2}
-            loading={pending}
-            aria-label="Giriş yap"
-          >
-            {!pending && <Rocket />} Giriş Yap
-          </Button>
-
-          <button
-            type="button"
-            onClick={() => setStep(1)}
-            disabled={pending}
-            className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground disabled:opacity-50"
-          >
-            <ArrowLeft className="size-4" /> Başka ad dene
-          </button>
-        </CardContent>
-      </Card>
-    );
   }
 
   return (
@@ -92,11 +49,11 @@ export function LoginForm() {
         </p>
         <CardTitle className="text-2xl">Hoş Geldin</CardTitle>
         <p className="text-sm text-muted-foreground">
-          Başlamak için adını yaz — hesabın otomatik oluşur.
+          Adın ve şifrenle giriş yap. İlk girişte hesabın otomatik oluşur.
         </p>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleStep1} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="login-name">Adın</Label>
             <Input
@@ -105,13 +62,37 @@ export function LoginForm() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Örn. Polat"
-              autoComplete="given-name"
+              autoComplete="username"
               autoFocus
               maxLength={40}
-              aria-describedby="login-name-help"
             />
-            <p id="login-name-help" className="text-xs text-muted-foreground">
-              Aynı adı tekrar yazarsan eski hesabına giriş yaparsın.
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="login-password">Şifre</Label>
+            <div className="relative">
+              <Input
+                id="login-password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="En az 6 karakter"
+                autoComplete="current-password"
+                minLength={6}
+                maxLength={100}
+                className="pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                aria-label={showPassword ? "Şifreyi gizle" : "Şifreyi göster"}
+              >
+                {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+              </button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Aynı ad + şifreyi başka cihazda da girersen aynı hesaba bağlanırsın.
             </p>
           </div>
 
@@ -119,10 +100,10 @@ export function LoginForm() {
             type="submit"
             size="xl"
             className="w-full"
-            loading={sending}
-            disabled={!canProceed}
+            loading={pending}
+            disabled={!canSubmit}
           >
-            {!sending && <Mail />} Magic Link Gönder
+            {!pending && <LogIn />} Giriş Yap
           </Button>
         </form>
       </CardContent>

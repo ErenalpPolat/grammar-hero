@@ -6,6 +6,10 @@ export const LoginSchema = z.object({
     .trim()
     .min(2, "En az 2 karakter")
     .max(40, "En fazla 40 karakter"),
+  password: z
+    .string()
+    .min(6, "Şifre en az 6 karakter olmalı")
+    .max(100, "Şifre çok uzun"),
 });
 
 export type LoginInput = z.infer<typeof LoginSchema>;
