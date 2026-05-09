@@ -21,7 +21,7 @@ export default async function QuizPage(props: PageProps<"/lesson/[lessonId]/quiz
   if (!VALID_GAME_TYPES.includes(gameType as GameType)) notFound();
 
   const user = await requireSessionUser();
-  const ref = await findLessonWithProgress(user.id, lessonId);
+  const ref = await findLessonWithProgress(user.id, lessonId, user.level);
   if (!ref) notFound();
 
   // Block locked lessons even via direct URL

@@ -60,7 +60,7 @@ const GAME_ORDER: GameType[] = [
 export default async function LessonDetailPage(props: PageProps<"/lesson/[lessonId]">) {
   const { lessonId } = await props.params;
   const user = await requireSessionUser();
-  const ref = await findLessonWithProgress(user.id, lessonId);
+  const ref = await findLessonWithProgress(user.id, lessonId, user.level);
   if (!ref) notFound();
   const { unit, lesson } = ref;
 

@@ -103,8 +103,12 @@ export async function getUnitsWithProgress(
   });
 }
 
-export async function findLessonWithProgress(userId: string, lessonId: string) {
-  const units = await getUnitsWithProgress(userId);
+export async function findLessonWithProgress(
+  userId: string,
+  lessonId: string,
+  userLevel?: string | null,
+) {
+  const units = await getUnitsWithProgress(userId, userLevel);
   for (const unit of units) {
     const lesson = unit.lessons.find((l) => l.id === lessonId);
     if (lesson) return { unit, lesson };

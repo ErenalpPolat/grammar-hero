@@ -17,7 +17,7 @@ export function generateStaticParams() {
 export default async function UnitDetailPage(props: PageProps<"/learn/[unitSlug]">) {
   const { unitSlug } = await props.params;
   const user = await requireSessionUser();
-  const units = await getUnitsWithProgress(user.id);
+  const units = await getUnitsWithProgress(user.id, user.level);
   const unit = units.find((u) => u.slug === unitSlug);
   if (!unit) notFound();
 
