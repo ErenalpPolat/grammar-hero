@@ -1,79 +1,80 @@
 "use server";
 
 import { headers } from "next/headers";
-import { AuthError, CredentialsSignin } from "next-auth";
-import { signIn } from "@/lib/auth";
+import { generateToken, MAGIC_LINK_TTL_MS } from "@/lib/magic-link";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rate-limit";
-import { userIdFromName } from "@/lib/slugify";
-import { LoginSchema } from "@/lib/validations";
+import { MagicLinkRequestSchema } from "@/lib/validations";
 
-export interface LoginActionResult {
+export interface SendMagicLinkResult {
   ok?: true;
-  redirectTo?: string;
   error?: string;
 }
 
-export async function loginAction(input: {
-  name: string;
-  password: string;
-  callbackUrl?: string | null;
-}): Promise<LoginActionResult> {
-  const parsed = LoginSchema.safeParse({
-    name: input.name,
-    password: input.password,
-  });
+export async function sendMagicLinkAction(input: {
+  email: string;
+}): Promise<SendMagicLinkResult> {
+  const parsed = MagicLinkRequestSchema.safeParse({ email: input.email });
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Geçersiz giriş" };
+    return { error: parsed.error.issues[0]?.message ?? "Geçersiz e-posta" };
   }
+  const email = parsed.data.email;
 
-  // Rate limit per IP — 5 attempts / minute
+  // Rate limit per IP — abuse prevention
   const headerStore = await headers();
   const forwarded = headerStore.get("x-forwarded-for");
   const realIp = headerStore.get("x-real-ip");
-  const ip = forwarded?.split(",")[0]?.trim() || realIp || "unknown";
-  const rl = checkRateLimit(`login:${ip}`, { maxAttempts: 5, windowMs: 60_000 });
+  const cfIp = headerStore.get("cf-connecting-ip"); // Cloudflare proxy
+  const ip = cfIp || forwarded?.split(",")[0]?.trim() || realIp || "unknown";
+  const rl = checkRateLimit(`magic:${ip}`, { maxAttempts: 5, windowMs: 60_000 });
   if (!rl.allowed) {
     return {
-      error: `Çok fazla giriş denemesi. ${rl.resetInSeconds} saniye sonra tekrar dene.`,
+      error: `Çok fazla deneme. ${rl.resetInSeconds} saniye sonra tekrar dene.`,
+    };
+  }
+
+  // Per-email rate limit — aynı e-postaya 1 dk içinde 3'ten fazla link gönderme
+  const emailRl = checkRateLimit(`magic-email:${email}`, {
+    maxAttempts: 3,
+    windowMs: 60_000,
+  });
+  if (!emailRl.allowed) {
+    return {
+      error: `Bu e-posta için çok fazla deneme. ${emailRl.resetInSeconds} sn sonra tekrar dene.`,
     };
   }
 
   try {
-    await signIn("credentials", {
-      name: parsed.data.name,
-      password: parsed.data.password,
-      redirect: false,
+    const { raw, hash } = generateToken();
+    const expiresAt = new Date(Date.now() + MAGIC_LINK_TTL_MS);
+
+    // Önceki kullanılmamış token'ları geçersiz kıl (kullanıcı yeni link isterse eskisi ölsün)
+    await prisma.magicLinkToken.updateMany({
+      where: { email, consumedAt: null, expiresAt: { gt: new Date() } },
+      data: { consumedAt: new Date() },
     });
+
+    await prisma.magicLinkToken.create({
+      data: { email, tokenHash: hash, expiresAt },
+    });
+
+    // Base URL'i request header'larından çıkar (Cloudflare proxy arkası dahil çalışır)
+    const host = headerStore.get("x-forwarded-host") || headerStore.get("host");
+    const proto = headerStore.get("x-forwarded-proto") || "https";
+    const baseUrl =
+      process.env.NEXT_PUBLIC_SITE_URL || (host ? `${proto}://${host}` : "http://localhost:3000");
+    const link = `${baseUrl}/auth/verify?token=${encodeURIComponent(raw)}`;
+
+    // MOCK: e-posta yerine PM2 logs'a bas. Gerçek e-postaya geçince Resend/Brevo entegrasyonu buraya.
+    console.log("=".repeat(70));
+    console.log(`[MAGIC LINK] ${email}`);
+    console.log(`[MAGIC LINK] ${link}`);
+    console.log(`[MAGIC LINK] Expires: ${expiresAt.toISOString()}`);
+    console.log("=".repeat(70));
   } catch (err) {
-    console.error("[login] signIn failed", err);
-    if (err instanceof CredentialsSignin) {
-      return {
-        error:
-          "Yanlış şifre veya bu ad başka bir hesaba ait. Şifreyi kontrol et ya da farklı bir ad seç.",
-      };
-    }
-    if (err instanceof AuthError) {
-      return {
-        error: "Sunucu hatası. Veritabanı bağlantısı veya AUTH_SECRET'ı kontrol et.",
-      };
-    }
-    throw err;
+    console.error("[magic-link] send failed", err);
+    return { error: "Sunucu hatası. Tekrar dene." };
   }
 
-  // Look up the just-upserted user to decide where to redirect
-  const id = userIdFromName(parsed.data.name);
-  const user = await prisma.user.findUnique({
-    where: { id },
-    select: { onboardingCompleted: true },
-  });
-
-  let redirectTo = "/learn";
-  if (!user?.onboardingCompleted) {
-    redirectTo = "/onboarding/level";
-  } else if (input.callbackUrl && input.callbackUrl.startsWith("/") && !input.callbackUrl.startsWith("//")) {
-    redirectTo = input.callbackUrl;
-  }
-
-  return { ok: true, redirectTo };
+  return { ok: true };
 }
