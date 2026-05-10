@@ -36,12 +36,11 @@ model User {
   // League state (0=Bronz … 9=Elmas)
   leagueTier Int @default(0)
 
-  lessonProgress     LessonProgress[]
-  gameAttempts       GameAttempt[]
-  dailyActivities    DailyActivity[]
-  reviewCards        ReviewCard[]
-  leagueMemberships  LeagueMembership[]
-  pushSubscriptions  PushSubscription[]
+  lessonProgress    LessonProgress[]
+  gameAttempts      GameAttempt[]
+  dailyActivities   DailyActivity[]
+  reviewCards       ReviewCard[]
+  leagueMemberships LeagueMembership[]
 
   @@index([updatedAt])
   @@index([totalXp(sort: Desc)])
@@ -123,21 +122,6 @@ model LeagueGroup {
   members LeagueMembership[]
 
   @@index([weekStart, tier])
-}
-
-// Web Push bildirim aboneliği — tarayıcı izni alındıktan sonra eklenir.
-// Endpoint tarayıcı tarafından üretilir ve globally unique'dir.
-model PushSubscription {
-  id        String   @id @default(cuid())
-  userId    String
-  endpoint  String   @unique
-  p256dh    String
-  auth      String
-  createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
 }
 
 // Bir kullanıcının belirli bir haftadaki grup üyeliği.

@@ -1,10 +1,9 @@
 import Link from "next/link";
-import { ArrowLeft, BookOpen, AlertTriangle, Bell, Palette, User2 } from "lucide-react";
+import { ArrowLeft, BookOpen, AlertTriangle, Palette, User2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DeleteAccountButton } from "@/components/profile/delete-account-button";
 import { LearningPrefsForm } from "@/components/profile/learning-prefs-form";
 import { NameEditForm } from "@/components/profile/name-edit-form";
-import { NotificationsSettings } from "@/components/profile/notifications-settings";
 import { ThemeSettings } from "@/components/profile/theme-settings";
 import { formatDate } from "@/lib/date";
 import { prisma } from "@/lib/prisma";
@@ -73,17 +72,6 @@ export default async function SettingsPage() {
             <p className="mb-2 text-sm font-medium">Tema</p>
             <ThemeSettings />
           </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Bell className="size-4" /> Bildirim
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <NotificationsSettings />
         </CardContent>
       </Card>
 
