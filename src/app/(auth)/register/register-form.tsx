@@ -33,6 +33,7 @@ export function RegisterForm() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [pending, startTransition] = useTransition();
 
@@ -41,7 +42,9 @@ export function RegisterForm() {
   const validEmail = /\S+@\S+\.\S+/.test(trimmedEmail);
   const checks = passwordChecks(password);
   const passwordOk = checks.every((c) => c.ok);
-  const canSubmit = validEmail && trimmedName.length >= 2 && passwordOk;
+  const passwordsMatch = password.length > 0 && password === passwordConfirm;
+  const canSubmit =
+    validEmail && trimmedName.length >= 2 && passwordOk && passwordsMatch;
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -140,6 +143,27 @@ export function RegisterForm() {
                 </li>
               ))}
             </ul>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="register-password-confirm">Şifre (tekrar)</Label>
+            <Input
+              id="register-password-confirm"
+              type={showPassword ? "text" : "password"}
+              value={passwordConfirm}
+              onChange={(e) => setPasswordConfirm(e.target.value)}
+              placeholder="Aynı şifreyi tekrar yaz"
+              autoComplete="new-password"
+              maxLength={100}
+              required
+            />
+            {passwordConfirm.length > 0 && (
+              <p
+                className={`text-xs ${passwordsMatch ? "text-correct" : "text-destructive"}`}
+              >
+                {passwordsMatch ? "✓ Şifreler eşleşiyor" : "✗ Şifreler eşleşmiyor"}
+              </p>
+            )}
           </div>
 
           <Button

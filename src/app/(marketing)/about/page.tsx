@@ -66,7 +66,7 @@ export default function AboutPage() {
 
       <div className="mt-16 text-center">
         <Button asChild size="xl">
-          <Link href="/login">
+          <Link href="/register">
             Hadi başla <ArrowRight />
           </Link>
         </Button>

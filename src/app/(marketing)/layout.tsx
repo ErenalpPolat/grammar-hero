@@ -36,7 +36,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
               Giriş Yap
             </Link>
             <Button asChild size="sm">
-              <Link href="/login">Ücretsiz Başla</Link>
+              <Link href="/register">Ücretsiz Başla</Link>
             </Button>
           </div>
         </div>

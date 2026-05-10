@@ -89,7 +89,7 @@ export default function FeaturesPage() {
 
       <div className="mt-16 text-center">
         <Button asChild size="xl">
-          <Link href="/login">
+          <Link href="/register">
             Ücretsiz Başla <ArrowRight />
           </Link>
         </Button>
