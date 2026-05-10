@@ -16,19 +16,17 @@ export interface LoginActionResult {
 export async function loginAction(input: {
   email: string;
   password: string;
-  name: string;
   callbackUrl?: string | null;
 }): Promise<LoginActionResult> {
   const parsed = LoginSchema.safeParse({
     email: input.email,
     password: input.password,
-    name: input.name,
   });
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Geçersiz giriş" };
   }
 
-  // Rate limit per IP (CF arkasında CF-Connecting-IP) — 5 deneme/dk
+  // Rate limit per IP — 5 deneme/dk
   const headerStore = await headers();
   const cfIp = headerStore.get("cf-connecting-ip");
   const forwarded = headerStore.get("x-forwarded-for");
@@ -41,29 +39,36 @@ export async function loginAction(input: {
     };
   }
 
+  // Önce hesap var mı bak — yoksa kullanıcıyı register'a yönlendir
+  const existing = await prisma.user.findUnique({
+    where: { email: parsed.data.email },
+    select: { id: true },
+  });
+  if (!existing) {
+    return {
+      error: "Bu e-postayla bir hesap yok. Önce ücretsiz hesap aç.",
+    };
+  }
+
   try {
     await signIn("credentials", {
       email: parsed.data.email,
       password: parsed.data.password,
-      name: parsed.data.name,
       redirect: false,
     });
   } catch (err) {
     console.error("[login] signIn failed", err);
     if (err instanceof CredentialsSignin) {
-      return {
-        error: "Yanlış şifre veya bu e-posta başka bir hesaba ait. Şifreyi kontrol et.",
-      };
+      return { error: "Şifre yanlış. Tekrar dene." };
     }
     if (err instanceof AuthError) {
       return {
-        error: "Sunucu hatası. Veritabanı bağlantısı veya AUTH_SECRET'ı kontrol et.",
+        error: "Sunucu hatası. Tekrar dene veya destek iste.",
       };
     }
     throw err;
   }
 
-  // Onboarding tamam mı? Yeni kullanıcı /onboarding'e gider
   const user = await prisma.user.findUnique({
     where: { email: parsed.data.email },
     select: { onboardingCompleted: true },

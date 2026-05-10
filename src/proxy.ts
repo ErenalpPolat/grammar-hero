@@ -5,7 +5,7 @@ import { authConfig } from "@/lib/auth.config";
 const { auth } = NextAuth(authConfig);
 
 const PUBLIC_PATHS = new Set<string>(["/", "/features", "/pricing", "/about", "/tokens"]);
-const AUTH_PATHS = new Set<string>(["/login"]);
+const AUTH_PATHS = new Set<string>(["/login", "/register"]);
 
 export const proxy = auth((req) => {
   const { nextUrl } = req;

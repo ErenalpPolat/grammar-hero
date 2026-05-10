@@ -30,12 +30,12 @@ export default function LandingPage() {
           </p>
           <div className="flex flex-wrap gap-3">
             <Button asChild size="xl">
-              <Link href="/login">
+              <Link href="/register">
                 Ücretsiz Başla <ArrowRight />
               </Link>
             </Button>
             <Button asChild size="xl" variant="outline">
-              <Link href="#nasil-calisir">Nasıl çalışır?</Link>
+              <Link href="/login">Giriş Yap</Link>
             </Button>
           </div>
         </div>
@@ -78,8 +78,8 @@ export default function LandingPage() {
         <ol className="grid gap-4 sm:grid-cols-3">
           <Step
             step={1}
-            title="Adını yaz"
-            desc='"Polat" yaz, mock magic link ile giriş yap. E-posta, şifre yok.'
+            title="Hesap aç"
+            desc="E-posta + şifre ile saniyeler içinde başla. Reklamsız, ücretsiz."
           />
           <Step
             step={2}
@@ -119,10 +119,10 @@ export default function LandingPage() {
         <Zap className="mx-auto mb-4 size-10 text-xp" aria-hidden />
         <h2 className="text-3xl font-bold sm:text-4xl">Bugün başla, yarın fark et.</h2>
         <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
-          İlk ders 3 dakika. Hesap oluşturmadan bile deneyebilirsin (sadece adını yaz).
+          İlk ders 3 dakika. Saniyeler içinde hesap aç ve oynamaya başla.
         </p>
         <Button asChild size="xl" className="mt-6">
-          <Link href="/login">
+          <Link href="/register">
             Ücretsiz başla <Trophy />
           </Link>
         </Button>
