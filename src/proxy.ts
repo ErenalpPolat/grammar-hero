@@ -4,14 +4,7 @@ import { authConfig } from "@/lib/auth.config";
 
 const { auth } = NextAuth(authConfig);
 
-const PUBLIC_PATHS = new Set<string>([
-  "/",
-  "/features",
-  "/pricing",
-  "/about",
-  "/tokens",
-  "/auth/verify", // magic link landing — login durumu önemli değil, token ile re-auth
-]);
+const PUBLIC_PATHS = new Set<string>(["/", "/features", "/pricing", "/about", "/tokens"]);
 const AUTH_PATHS = new Set<string>(["/login"]);
 
 export const proxy = auth((req) => {

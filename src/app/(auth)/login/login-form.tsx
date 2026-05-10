@@ -1,68 +1,49 @@
 "use client";
 
-import { ArrowLeft, Mail, Send } from "lucide-react";
+import { Eye, EyeOff, LogIn } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { sendMagicLinkAction } from "./actions";
+import { loginAction } from "./actions";
 
 export function LoginForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
+
   const [email, setEmail] = useState("");
-  const [sentTo, setSentTo] = useState<string | null>(null);
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [pending, startTransition] = useTransition();
 
-  const trimmed = email.trim();
-  const canSubmit = /\S+@\S+\.\S+/.test(trimmed);
+  const trimmedEmail = email.trim().toLowerCase();
+  const trimmedName = name.trim();
+  const validEmail = /\S+@\S+\.\S+/.test(trimmedEmail);
+  const canSubmit =
+    validEmail && password.length >= 6 && trimmedName.length >= 2;
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!canSubmit || pending) return;
     startTransition(async () => {
-      const result = await sendMagicLinkAction({ email: trimmed });
+      const result = await loginAction({
+        email: trimmedEmail,
+        password,
+        name: trimmedName,
+        callbackUrl,
+      });
       if (result.error) {
         toast.error(result.error);
         return;
       }
-      setSentTo(trimmed);
+      router.push(result.redirectTo ?? "/learn");
+      router.refresh();
     });
-  }
-
-  if (sentTo) {
-    return (
-      <Card>
-        <CardContent className="space-y-6 pt-8 text-center">
-          <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary/10">
-            <Mail className="size-8 text-primary" aria-hidden />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold">Link gönderildi!</h1>
-            <p className="mt-2 text-sm text-muted-foreground">
-              <strong>{sentTo}</strong> adresine giriş linki yolladık.
-              <br />
-              Linke tıklayınca otomatik giriş yapacaksın. 15 dakika geçerli.
-            </p>
-            <p className="mt-3 rounded-md border border-amber-300/40 bg-amber-50 px-3 py-2 text-left text-xs text-amber-900 dark:bg-amber-950/30 dark:text-amber-200">
-              ⚠ <strong>Mock mod:</strong> Henüz e-posta servisi bağlı değil. Linki sunucu
-              loglarında (PM2) görebilirsin: <code className="font-mono">pm2 logs grammar-hero</code>
-            </p>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => {
-              setSentTo(null);
-              setEmail("");
-            }}
-            className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="size-4" /> Başka e-posta dene
-          </button>
-        </CardContent>
-      </Card>
-    );
   }
 
   return (
@@ -73,7 +54,7 @@ export function LoginForm() {
         </p>
         <CardTitle className="text-2xl">Hoş Geldin</CardTitle>
         <p className="text-sm text-muted-foreground">
-          E-postanı yaz, sana giriş linki yollayalım. Şifre yok.
+          E-posta + şifrenle giriş yap. İlk kez geliyorsan hesabın bu adınla otomatik oluşur.
         </p>
       </CardHeader>
       <CardContent>
@@ -91,8 +72,49 @@ export function LoginForm() {
               maxLength={254}
               required
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="login-password">Şifre</Label>
+            <div className="relative">
+              <Input
+                id="login-password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="En az 6 karakter"
+                autoComplete="current-password"
+                minLength={6}
+                maxLength={100}
+                className="pr-10"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                aria-label={showPassword ? "Şifreyi gizle" : "Şifreyi göster"}
+              >
+                {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+              </button>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="login-name">Adın</Label>
+            <Input
+              id="login-name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Örn. Polat"
+              autoComplete="given-name"
+              maxLength={40}
+              required
+            />
             <p className="text-xs text-muted-foreground">
-              Aynı e-posta = aynı hesap. Farklı cihazda da aynı linki kullanabilirsin.
+              Profilde ve liderlik tablosunda görünür. Mevcut hesaba giriyorsan
+              kayıtlı adın korunur (yazdığın ad ignored).
             </p>
           </div>
 
@@ -103,7 +125,7 @@ export function LoginForm() {
             loading={pending}
             disabled={!canSubmit}
           >
-            {!pending && <Send />} Magic Link Gönder
+            {!pending && <LogIn />} Giriş Yap
           </Button>
         </form>
       </CardContent>

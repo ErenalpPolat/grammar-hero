@@ -11,11 +11,12 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid()) // random — eskiden name'den türetiliyordu, magic link'le birlikte değişti
-  name      String
-  email     String   @unique // magic link'in canonical identifier'ı
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String // scrypt hash (lib/password.ts)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   // Onboarding (null until each step finished)
   onboardingCompleted Boolean @default(false)
@@ -159,16 +160,3 @@ model LeagueMembership {
   @@index([groupId, weeklyXp(sort: Desc)])
 }
 
-// Magic link / passwordless giriş için tek kullanımlık token.
-// Verify edildikten sonra consumedAt set edilir; cleanup cron sonradan temizler.
-model MagicLinkToken {
-  id         String    @id @default(cuid())
-  email      String
-  tokenHash  String    @unique // sha256(raw_token) — raw token sadece e-posta linkinde geçer
-  expiresAt  DateTime
-  consumedAt DateTime?
-  createdAt  DateTime  @default(now())
-
-  @@index([email])
-  @@index([expiresAt])
-}

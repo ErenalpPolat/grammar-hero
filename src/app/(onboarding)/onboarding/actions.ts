@@ -7,27 +7,12 @@ import { seedReviewCardsIfEmpty } from "@/lib/review";
 import {
   OnboardingGoalSchema,
   OnboardingLevelSchema,
-  OnboardingNameSchema,
 } from "@/lib/validations";
 
 async function requireUser() {
   const session = await auth();
   if (!session?.user?.id) throw new Error("Not authenticated");
   return session.user.id;
-}
-
-export async function setNameAction(formData: FormData) {
-  const userId = await requireUser();
-  const parsed = OnboardingNameSchema.safeParse({
-    name: formData.get("name"),
-  });
-  if (!parsed.success) return;
-
-  await prisma.user.update({
-    where: { id: userId },
-    data: { name: parsed.data.name },
-  });
-  redirect("/onboarding/level");
 }
 
 export async function setLevelAction(formData: FormData) {

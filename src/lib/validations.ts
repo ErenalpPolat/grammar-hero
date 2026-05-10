@@ -1,7 +1,6 @@
 import { z } from "zod";
 
-/** Magic link request — sadece e-posta gerekli. */
-export const MagicLinkRequestSchema = z.object({
+export const LoginSchema = z.object({
   email: z
     .string()
     .trim()
@@ -9,22 +8,18 @@ export const MagicLinkRequestSchema = z.object({
     .min(3, "Geçerli bir e-posta yaz")
     .max(254, "Çok uzun")
     .email("Geçerli bir e-posta yaz"),
-});
-
-export type MagicLinkRequest = z.infer<typeof MagicLinkRequestSchema>;
-
-/** Verify (Credentials.authorize input) — token ham hali ile gelir, server hash'leyip karşılaştırır. */
-export const MagicLinkVerifySchema = z.object({
-  token: z.string().min(20, "Geçersiz token"),
-});
-
-export const OnboardingNameSchema = z.object({
+  password: z
+    .string()
+    .min(6, "Şifre en az 6 karakter olmalı")
+    .max(100, "Şifre çok uzun"),
   name: z
     .string()
     .trim()
-    .min(2, "En az 2 karakter")
-    .max(40, "En fazla 40 karakter"),
+    .min(2, "Ad en az 2 karakter")
+    .max(40, "Ad en fazla 40 karakter"),
 });
+
+export type LoginInput = z.infer<typeof LoginSchema>;
 
 export const LEVELS = ["newbie", "a1-a2", "b1-b2", "c1-plus"] as const;
 export const OnboardingLevelSchema = z.object({

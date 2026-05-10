@@ -29,7 +29,7 @@ export default function OnboardingLevelPage() {
 
   return (
     <div>
-      <StepIndicator current={2} total={3} />
+      <StepIndicator current={1} total={2} />
       <h1 className="mb-6 text-center text-3xl font-bold">Şu anki seviyen nedir?</h1>
       <div className="flex flex-col gap-3">
         {LEVELS.map((lvl) => (

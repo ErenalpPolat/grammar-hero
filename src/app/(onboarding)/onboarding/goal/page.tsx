@@ -36,7 +36,7 @@ export default function OnboardingGoalPage() {
       >
         <ArrowLeft className="size-4" /> Geri
       </Link>
-      <StepIndicator current={3} total={3} />
+      <StepIndicator current={2} total={2} />
       <h1 className="mb-2 text-center text-3xl font-bold">Günlük hedefin ne olsun?</h1>
       <p className="mb-6 text-center text-sm text-muted-foreground">
         Her gün bu kadar pratik yapmayı hedeflersin. Sonradan değiştirebilirsin.
