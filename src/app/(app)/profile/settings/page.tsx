@@ -3,6 +3,7 @@ import { ArrowLeft, BookOpen, AlertTriangle, Bell, Palette, User2 } from "lucide
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DeleteAccountButton } from "@/components/profile/delete-account-button";
 import { LearningPrefsForm } from "@/components/profile/learning-prefs-form";
+import { NameEditForm } from "@/components/profile/name-edit-form";
 import { NotificationsSettings } from "@/components/profile/notifications-settings";
 import { ThemeSettings } from "@/components/profile/theme-settings";
 import { formatDate } from "@/lib/date";
@@ -15,7 +16,7 @@ export default async function SettingsPage() {
   const user = await requireSessionUser({ allowIncompleteOnboarding: true });
   const full = await prisma.user.findUnique({
     where: { id: user.id },
-    select: { createdAt: true },
+    select: { createdAt: true, email: true },
   });
 
   return (
@@ -35,19 +36,15 @@ export default async function SettingsPage() {
             <User2 className="size-4" /> Hesap
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3 text-sm">
-          <dl className="divide-y divide-border">
-            <DLRow label="Ad" value={user.name} />
-            <DLRow label="Hesap ID" value={<code className="text-xs">{user.id}</code>} />
+        <CardContent className="space-y-4 text-sm">
+          <NameEditForm initialName={user.name} />
+          <dl className="divide-y divide-border border-t border-border pt-3">
+            <DLRow label="E-posta" value={full?.email ?? "—"} />
             <DLRow
               label="Üyelik"
               value={full?.createdAt ? formatDate(full.createdAt) : "—"}
             />
           </dl>
-          <p className="rounded-md bg-muted p-3 text-xs text-muted-foreground">
-            ⚠ Mock magic link modunda ad değiştirilemez — yeni ad = yeni hesap. Geçiş
-            yapmak için aşağıdan hesabı sil, sonra yeni adla giriş yap.
-          </p>
         </CardContent>
       </Card>
 
