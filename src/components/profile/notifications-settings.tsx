@@ -1,7 +1,7 @@
 "use client";
 
 import { Bell, BellOff, Send } from "lucide-react";
-import { useEffect, useState, useSyncExternalStore, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -27,7 +27,7 @@ const DEFAULT: NotificationsState = {
   streakAlert: true,
 };
 
-function readState(): NotificationsState {
+function readStateFromStorage(): NotificationsState {
   if (typeof window === "undefined") return DEFAULT;
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -36,16 +36,6 @@ function readState(): NotificationsState {
   } catch {
     return DEFAULT;
   }
-}
-
-function subscribeToStorage(callback: () => void): () => void {
-  if (typeof window === "undefined") return () => {};
-  window.addEventListener("storage", callback);
-  return () => window.removeEventListener("storage", callback);
-}
-
-function useNotificationsState(): NotificationsState {
-  return useSyncExternalStore(subscribeToStorage, readState, () => DEFAULT);
 }
 
 /** Convert VAPID public key (base64url) to Uint8Array for pushManager.subscribe. */
@@ -66,9 +56,16 @@ type PushStatus =
   | { kind: "loading" };
 
 export function NotificationsSettings() {
-  const state = useNotificationsState();
+  // SSR'da DEFAULT, mount sonrası localStorage'dan okuyup hydrate ederiz.
+  // Bu pattern useSyncExternalStore'un her render'da yeni obje döndürüp
+  // sonsuz re-render'a girmesi sorununu (React error #185) çözer.
+  const [state, setState] = useState<NotificationsState>(DEFAULT);
   const [push, setPush] = useState<PushStatus>({ kind: "loading" });
   const [pending, startTransition] = useTransition();
+
+  useEffect(() => {
+    setState(readStateFromStorage());
+  }, []);
 
   useEffect(() => {
     async function refreshPushStatus() {
@@ -118,14 +115,15 @@ export function NotificationsSettings() {
   }
 
   const update = (next: Partial<NotificationsState>) => {
-    const merged = { ...state, ...next };
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-      // Trigger useSyncExternalStore re-read in same tab
-      window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY }));
-    } catch {
-      // ignore storage errors
-    }
+    setState((prev) => {
+      const merged = { ...prev, ...next };
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+      } catch {
+        // ignore storage errors
+      }
+      return merged;
+    });
   };
 
   const enablePush = () => {
