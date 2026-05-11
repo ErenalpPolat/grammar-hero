@@ -68,8 +68,10 @@
   --popover: var(--neutral-0);
   --popover-foreground: var(--neutral-900);
 
-  --border: var(--neutral-200);
-  --input: var(--neutral-200);
+  /* Border'lar light mode'da neutral-200 ile neredeyse görünmüyordu;
+     neutral-300 ile UI çerçeveleri (kart, input, divider) net görünür. */
+  --border: var(--neutral-300);
+  --input: var(--neutral-300);
   --ring: var(--brand-500);
 
   --destructive: #dc2626;
